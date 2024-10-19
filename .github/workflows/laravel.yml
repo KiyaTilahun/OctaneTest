@@ -41,4 +41,7 @@ jobs:
           ./vendor/bin/sail up -d
           ./vendor/bin/sail artisan migrate
           ./vendor/bin/sail test
-   
+
+      - name: Start test
+        run: |
+          php artisan test
