@@ -14,7 +14,6 @@ jobs:
         image: 'mysql/mysql-server:8.0'
         ports:
           - 4444:3306
-        options: --health-cmd="mysqladmin ping -p${{ secrets.DB_PASSWORD }}" --health-interval=10s --health-timeout=5s --health-retries=3
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
           MYSQL_DATABASE: ${{ secrets.DB_DATABASE }}
