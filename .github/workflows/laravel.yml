@@ -9,16 +9,16 @@ on:
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: 'mysql/mysql-server:8.0'
-        ports:
-          - 4444:3306
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.DB_DATABASE }}
-          MYSQL_USER: ${{ secrets.DB_USERNAME }}
-          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    # services:
+    #   mysql:
+    #     image: 'mysql/mysql-server:8.0'
+    #     ports:
+    #       - 4444:3306
+    #     env:
+    #       MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    #       MYSQL_DATABASE: ${{ secrets.DB_DATABASE }}
+    #       MYSQL_USER: ${{ secrets.DB_USERNAME }}
+    #       MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
     
     steps:
       - uses: actions/checkout@v3

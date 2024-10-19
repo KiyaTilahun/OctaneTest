@@ -12,7 +12,7 @@ services:
             - '8085:80'
             - '5174:${VITE_PORT:-5173}'
         environment:
-            SUPERVISOR_PHP_COMMAND: "/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan octane:start --server=swoole --host=0.0.0.0 --port=80" 
+            SUPERVISOR_PHP_COMMAND: "/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan octane:start --server=roadrunner --host=0.0.0.0 --rpc-port=6001 --port=80" 
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
@@ -22,32 +22,32 @@ services:
             - '.:/var/www/html'
         networks:
             - sail
-        # depends_on:
-        #     - mysql
-    # mysql:
-    #     image: 'mysql/mysql-server:8.0'
-    #     ports:
-    #         - '4444:3306'
-    #     environment:
-    #         MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-    #         MYSQL_ROOT_HOST: '%'
-    #         MYSQL_DATABASE: '${DB_DATABASE}'
-    #         MYSQL_USER: '${DB_USERNAME}'
-    #         MYSQL_PASSWORD: '${DB_PASSWORD}'
-    #         MYSQL_ALLOW_EMPTY_PASSWORD: 1
-    #     volumes:
-    #         - 'sail-mysql:/var/lib/mysql'
-    #         - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
-    #     networks:
-    #         - sail
-    #     healthcheck:
-    #         test:
-    #             - CMD
-    #             - mysqladmin
-    #             - ping
-    #             - '-p${DB_PASSWORD}'
-    #         retries: 3
-    #         timeout: 5s
+        depends_on:
+            - mysql
+    mysql:
+        image: 'mysql/mysql-server:8.0'
+        ports:
+            - '4444:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        volumes:
+            - 'sail-mysql:/var/lib/mysql'
+            - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - mysqladmin
+                - ping
+                - '-p${DB_PASSWORD}'
+            retries: 3
+            timeout: 5s
 networks:
     sail:
         driver: bridge
