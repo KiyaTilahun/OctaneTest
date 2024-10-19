@@ -39,9 +39,14 @@ jobs:
       - name: Start Sail and Run Tests
         run: |
           ./vendor/bin/sail up -d
+          ./vendor/bin/sail composer require laravel/octane spiral/roadrunner-cli spiral/roadrunner-http
+          ./vendor/bin/sail shell
+          ./vendor/bin/rr get-binary
+          ./vendor/bin/sail build --no-cache
           ./vendor/bin/sail artisan migrate
           ./vendor/bin/sail test
 
       - name: Start test
         run: |
           php artisan test
+         
