@@ -1,52 +1,22 @@
 pipeline {
-    agent any
-    environment {
-        SAIL_CMD = './vendor/bin/sail' // Command to run Sail
-        DOCKER_COMPOSE_CMD = 'docker-compose'
-    }
-
+    agent any 
     stages {
-        stage('Checkout Code') {
+        stage('Build') { 
             steps {
-                // Checkout the source code from your Git repository
-                git branch: 'master',  url: 'git@github.com:your-username/your-repo.git'
+                // 
+                 sh "./vendor/bin/sail composer install"
             }
         }
-
-        stage('Install Dependencies') {
+        stage('Test') { 
             steps {
-                // Install Laravel dependencies via Composer
-                sh "${SAIL_CMD} composer install"
+                // 
             }
         }
-
-        stage('Run Tests') {
+        stage('Deploy') { 
             steps {
-                // Run your Laravel PHPUnit tests
-                sh "${SAIL_CMD} test"
+                // 
             }
-        }
-
-        stage('Build Docker Containers') {
-            steps {
-                // Build the Sail containers (optional)
-                sh "${DOCKER_COMPOSE_CMD} up -d --build"
-            }
-        }
-
-        stage('Deploy Application') {
-            steps {
-                // Define steps to deploy the Laravel application to a server (e.g., SCP, FTP, or deployment script)
-                echo "Deploying Application"
-            }
-        }
-    }
-
-    post {
-        always {
-            // Archive logs, clean up, etc.
-            archiveArtifacts artifacts: '**/storage/logs/*.log', allowEmptyArchive: true
-            cleanWs()
         }
     }
 }
+
