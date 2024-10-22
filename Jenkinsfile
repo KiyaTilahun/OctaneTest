@@ -3,24 +3,53 @@ pipeline {
     stages {
         stage('Clean workspace') {
             steps {
-                deleteDir() // Cleans the workspace
-                sh 'ls -lah' // Lists files in the workspace
-            }
-        }
-        stage('Install Composer') {
-            steps {
-                // Download and install Composer
-                sh 'curl -sS https://getcomposer.org/installer | php'
-                // Move Composer to a global location
-                sh 'mv composer.phar /usr/local/bin/composer'
-                // Ensure Composer is executable
-                sh 'chmod +x /usr/local/bin/composer'
+                deleteDir()
+                sh 'ls -lah'
             }
         }
         stage('Build') {
             steps {
-                sh 'composer install' // Install composer dependencies
-                sh 'php artisan key:generate' // Generate application key
+                // Use a Docker container with PHP and Composer
+                script {
+                    // Run commands inside a Docker container
+                    sh '''
+                        docker run --rm \
+                        -v $(pwd):/app \
+                        -w /app \
+                        composer:latest \
+                        install
+                    '''
+                }
+                sh 'cp .env.example .env'
+                sh 'php artisan key:generate'
+            }
+        }
+        stage('Test') {
+            steps {
+                // Add your test steps here, you might need to run tests inside the same container
+                script {
+                    sh '''
+                        docker run --rm \
+                        -v $(pwd):/app \
+                        -w /app \
+                        composer:latest \
+                        php artisan test
+                    '''
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                // Add your deployment steps here, similar to above
+                script {
+                    sh '''
+                        docker run --rm \
+                        -v $(pwd):/app \
+                        -w /app \
+                        composer:latest \
+                        php artisan deploy
+                    '''
+                }
             }
         }
     }
