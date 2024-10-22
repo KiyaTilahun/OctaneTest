@@ -1,10 +1,9 @@
 pipeline {
     agent {
-        docker {
+        dockerContainer {
             image 'ubuntu:20.04'  // Use a base image
         }
     }
-    
     stages {
         stage('Install PHP and Composer') {
             steps {
