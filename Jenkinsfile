@@ -1,14 +1,12 @@
+
 pipeline {
     agent {
-        dockerfile {
-            filename 'docker-compose'
-            dir './'
-        }
+        dockerContainer { image 'composer:latest' }
     }
     stages {
         stage('Test') {
             steps {
-                sh 'php --version'
+                sh 'composer --version'
             }
         }
     }
