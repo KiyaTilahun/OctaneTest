@@ -10,7 +10,7 @@ fererfe
         stage('Checkout Code') {
             steps {
                 // Checkout the source code from your Git repository
-                git branch: 'main', credentialsId: 'your-credentials-id', url: 'git@github.com:your-username/your-repo.git'
+                git branch: 'master',  url: 'git@github.com:your-username/your-repo.git'
             }
         }
 
