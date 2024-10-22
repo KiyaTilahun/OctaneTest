@@ -48,6 +48,15 @@ services:
                 - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
+    jenkins:
+        image: jenkins/jenkins:lts
+        ports:
+            - "8090:8080"  # Jenkins default port
+            - "50040:50000"  # For Jenkins agent communication
+        volumes:
+            - ./jenkins_home:/var/lib/jenkins_home
+        depends_on:
+            - mysql
 networks:
     sail:
         driver: bridge
