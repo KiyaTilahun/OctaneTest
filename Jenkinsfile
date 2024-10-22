@@ -1,20 +1,28 @@
+
 pipeline {
-    agent any 
+    agent any
     stages {
-        stage('Build') { 
+        stage('Clean workspace') {
+                    deleteDir()
+                    sh 'ls -lah'
+        }
+        stage('Build') {
             steps {
-                // 
-                 sh "./vendor/bin/sail composer install"
+                //
+                sh './vendor/bin/sail composer install'
+                sh 'cp .env.example .env'
+                sh 'composer install'
+                sh 'php artisan key:generate'
             }
         }
-        stage('Test') { 
+        stage('Test') {
             steps {
-                // 
+            //
             }
         }
-        stage('Deploy') { 
+        stage('Deploy') {
             steps {
-                // 
+            //
             }
         }
     }
