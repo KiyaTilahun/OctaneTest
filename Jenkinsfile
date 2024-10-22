@@ -15,16 +15,5 @@ pipeline {
                 sh 'php artisan key:generate' // Generate application key
             }
         }
-        stage('Test') {
-            steps {
-                // You can add test scripts here, such as PHPUnit tests
-                // sh './vendor/bin/sail phpunit'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                // Add deployment steps here
-            }
-        }
     }
 }
