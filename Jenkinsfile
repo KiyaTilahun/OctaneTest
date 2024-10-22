@@ -1,5 +1,10 @@
 pipeline {
-    agent { dockerfile true }
+    agent {
+        dockerfile {
+            filename 'docker-compose'
+            dir './'
+        }
+    }
     stages {
         stage('Test') {
             steps {
