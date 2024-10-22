@@ -1,25 +1,39 @@
 pipeline {
-    agent any
-    stages {
-        stage('Checkout Code') {
-            steps {
-                checkout scm  // Checkout the source code
-            }
+    agent {
+        docker {
+            image 'ubuntu:20.04'  // Use a base image
         }
-        stage('Set Up PHP') {
+    }
+    
+    stages {
+        stage('Install PHP and Composer') {
             steps {
                 script {
-                    // Set up PHP and install required extensions
+                    // Install PHP, Composer, and necessary extensions
                     sh '''
-                        curl -sSL https://raw.githubusercontent.com/shivammathur/setup-php/master/setup.sh | bash
-                        setup-php --version 8.3 --extensions mbstring,pdo,xml,bcmath
+                        apt-get update
+                        apt-get install -y software-properties-common curl git unzip
+                        add-apt-repository ppa:ondrej/php -y
+                        apt-get update
+                        apt-get install -y php8.3 php8.3-cli php8.3-fpm php8.3-mbstring php8.3-xml php8.3-bcmath php8.3-mysql
+                        
+                        # Install Composer
+                        curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+                        
+                        # Verify installations
+                        php --version
+                        composer --version
                     '''
                 }
             }
         }
+        stage('Checkout Code') {
+            steps {
+                checkout scm  // Checkout the source code from your repository
+            }
+        }
         stage('Install Dependencies') {
             steps {
-                // Set up .env file and install Composer dependencies
                 sh '''
                     cp .env.example .env
                     composer install
@@ -29,12 +43,9 @@ pipeline {
         }
         stage('Start Sail and Run Tests') {
             steps {
-                // Start Sail and run tests
+                // Start Laravel Sail, set up services, and run tests
                 sh '''
                     ./vendor/bin/sail up -d
-                    ./vendor/bin/sail composer require laravel/octane spiral/roadrunner-cli spiral/roadrunner-http
-                    ./vendor/bin/sail shell -c "./vendor/bin/rr get-binary"
-                    ./vendor/bin/sail build --no-cache
                     ./vendor/bin/sail artisan migrate
                     ./vendor/bin/sail test
                 '''
@@ -42,15 +53,15 @@ pipeline {
         }
         stage('Final Test') {
             steps {
-                // Final testing stage
+                // Run Laravel's PHP tests
                 sh 'php artisan test'
             }
         }
     }
     post {
         always {
-            // Cleanup actions or notifications can go here
-            sh './vendor/bin/sail down'  // Stop Sail if running
+            // Clean up by stopping Sail
+            sh './vendor/bin/sail down'
         }
     }
 }
