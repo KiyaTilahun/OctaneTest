@@ -9,7 +9,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh './vendor/bin/sail composer install' // Using Sail to install dependencies
+ 
                 sh 'cp .env.example .env' // Copy .env example
                 sh 'composer install' // Install composer dependencies
                 sh 'php artisan key:generate' // Generate application key
