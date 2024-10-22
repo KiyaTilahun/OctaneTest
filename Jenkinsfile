@@ -1,6 +1,5 @@
 pipeline {
     agent any
-fererfe
     environment {
         SAIL_CMD = './vendor/bin/sail' // Command to run Sail
         DOCKER_COMPOSE_CMD = 'docker-compose'
